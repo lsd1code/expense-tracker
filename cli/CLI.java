@@ -48,7 +48,7 @@ public class CLI {
     }
 
     public void summarize() {
-        expenseTracker.summary().ifPresent(System.out::println);
+        expenseTracker.summary().ifPresent(value -> System.out.println("Total Expenses: R" + value));
     }
 
     public void summarizeMonthly() {
@@ -70,7 +70,7 @@ public class CLI {
                 System.exit(1);
             }
 
-            expenseTracker.summary(month).ifPresent(System.out::println);
+            expenseTracker.summary(month).ifPresent(value -> System.out.println("Total Expenses: R" + value));
         } catch (NumberFormatException ignored) {
             System.out.println("""
             Error: Something went wrong.
