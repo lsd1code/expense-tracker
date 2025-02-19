@@ -19,7 +19,7 @@
 ```shell
 # List of commands
 # filename: [0], operation: [1], flag1: [2], arg1: [3], flag2: [4], arg2: [5]
-expense-tracker add --description [expense_desc] --amount # Expense added successfully (ID: eId)
+expense-tracker add --description [expense_desc] --amount [amount] # Expense added successfully (ID: eId)
 
 # filename: [0], operation: [1]
 expense-tracker list # returns a list of all expenses

@@ -10,11 +10,11 @@ public class Expense {
 
     public Expense(){}
 
-    public Expense(String description, LocalDate date, double amount) {
+    public Expense(String description, LocalDate date, double amount, long id) {
         this.description = description;
         this.date = date;
         this.amount = amount;
-        this.id = (int) (Math.random() * 100);
+        this.id = id;
     }
 
     public long getId() {
