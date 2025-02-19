@@ -16,7 +16,7 @@ public class ExpenseTracker {
 
     public boolean addExpense(String description, LocalDate date, double amount) {
         expenses.add(
-                new Expense(description, date, amount, genId())
+                new Expense(description, date, amount, id++)
         );
         return true;
     }

@@ -2,8 +2,6 @@ package org.lesedibale.projects.expense_tracker.cli;
 
 import org.lesedibale.projects.expense_tracker.expense_tracker.ExpenseTracker;
 
-import java.util.Arrays;
-
 public class CLI {
     public final ExpenseTracker expenseTracker;
     private final String[] args;
@@ -22,20 +20,28 @@ public class CLI {
             switch(arg) {
                 case "list" -> listExpenses();
                 case "delete" -> {
-                    if(args.length < 4) {
+                    if(deleteExpense()) {
+                        System.out.println("Expense Deleted Successfully");
+                    } else {
                         System.out.println("""
-                        Invalid number of arguments.
+                        Error: Could not delete expense.
                         Usage: java Application.java delete --id [expense_id]
                         """);
-
-                        System.exit(1);
                     }
+                    System.exit(0);
                 }
                 case "add" -> {
-                    var values = Arrays.copyOfRange(args, 2, 5);
                     System.out.println("add expense");
+                    System.exit(0);
                 }
-                case "summary" -> System.out.println("summarize expenses");
+                case "summary" -> {
+                    if (args.length == 1) {
+                        summarize();
+                    } else {
+                        summarizeMonthly();
+                    }
+                    System.exit(0);
+                }
                 default -> System.out.println("enter a valid argument");
             }
         }
@@ -45,22 +51,52 @@ public class CLI {
         expenseTracker.summary().ifPresent(System.out::println);
     }
 
-    public void summarize(long id) {
-        expenseTracker.summary(id).ifPresent(System.out::println);
-    }
-
-    public boolean deleteExpense(long id) {
+    public void summarizeMonthly() {
         var flag = args[1];
 
-        if(args.length < 4) {
+        if(!flag.equals("--month")) {
             System.out.println("""
-                        Invalid number of arguments.
-                        Usage: java Application.java delete --id [expense_id]
-                        """);
+            Error: Something went wrong.
+            Usage: java Application.java summary --month [month_number]
+            """);
             System.exit(1);
         }
 
-        return expenseTracker.removeExpense(id);
+        try {
+            var month = Long.parseLong(args[2]);
+
+            if(month < 1 || month > 12) {
+                System.out.println("Error: Enter a valid month number[1-12].");
+                System.exit(1);
+            }
+
+            expenseTracker.summary(month).ifPresent(System.out::println);
+        } catch (NumberFormatException ignored) {
+            System.out.println("""
+            Error: Something went wrong.
+            Usage: java Application.java summary --month [month_number]
+            """);
+            System.exit(1);
+        }
+    }
+
+    public boolean deleteExpense() {
+        var flag = args[1];
+
+        if(args.length != 3 || !flag.equals("--id")) {
+            System.out.println("""
+            Error: Could not delete expense.
+            Usage: java Application.java delete --id [expense_id]
+            """);
+            System.exit(1);
+        }
+
+        try {
+            var id = Long.parseLong(args[2]);
+            return expenseTracker.removeExpense(id);
+        } catch (NumberFormatException ignored) {
+            return false;
+        }
     }
 
     public void listExpenses() {
@@ -86,6 +122,5 @@ public class CLI {
                 expense.getAmount()
             );
         }
-
     }
 }
