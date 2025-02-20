@@ -16,6 +16,8 @@
 - Allow user to set a budget for each month and show a warning when the user exceeds the given budget
 - Allow user to export expenses as CSV/JSON file
 
+### Usage
+
 ```shell
 # List of commands
 # filename: [0], operation: [1], flag1: [2], arg1: [3], flag2: [4], arg2: [5]
@@ -31,7 +33,7 @@ expense-tracker delete --id [expense_id] # Task deleted successfully
 expense-tracker summary --month [month_num] # Summary for the given month
 ```
 
-## Requirements
+### Requirements
 
 - Java 11+
 - Maven(Optional)
