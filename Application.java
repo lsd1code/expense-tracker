@@ -9,10 +9,6 @@ import java.time.LocalDate;
 public class Application {
     public static void main(String[] args) {
         var cli = new CLI(args);
-        cli.expenseTracker.addExpense("Groceries", LocalDate.now(), 200.5);
-        cli.expenseTracker.addExpense("Takeout", LocalDate.now(), 180);
-        cli.expenseTracker.addExpense("Toiletry", LocalDate.now(), 100.75);
-
         cli.start();
     }
 

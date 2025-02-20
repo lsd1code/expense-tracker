@@ -1,39 +1,50 @@
 package org.lesedibale.projects.expense_tracker.expense_tracker;
 
+import org.lesedibale.projects.expense_tracker.persistence.FileStorage;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
 public class ExpenseTracker {
     private final List<Expense> expenses;
-    private static long id = 1;
+    private final FileStorage storage;
 
     public ExpenseTracker(){
-        this.expenses = new ArrayList<>();
+        this.storage = new FileStorage();
+        this.expenses = storage.load();
     }
 
     public boolean addExpense(String description, LocalDate date, double amount) {
         expenses.add(
-                new Expense(description, date, amount, id++)
+                new Expense(description, String.valueOf(date), amount, genId())
         );
+        storage.save(expenses);
+
         return true;
     }
 
     public boolean updateExpense(long expenseId, String description, LocalDate date, double amount) {
-        return expenses.stream()
+        var result = expenses.stream()
                 .findFirst()
                 .map(e -> {
                     e.setDescription(description);
-                    e.setDate(date);
+                    e.setDate(String.valueOf(date));
                     e.setAmount(amount);
                     return true;
                 }).orElse(false);
+        storage.save(expenses);
+        return result;
     }
 
     public boolean removeExpense(long id) {
-        return expenses.removeIf(e -> e.getId() == id);
+        var result = expenses.removeIf(e -> e.getId() == id);
+
+        storage.save(expenses);
+        return result;
     }
 
     public Optional<Double> summary() {
@@ -42,7 +53,7 @@ public class ExpenseTracker {
 
     public Optional<Double> summary(long month) {
         return expenses.stream()
-                .filter(e -> e.getDate().getMonthValue() == month)
+                .filter(e -> LocalDate.parse(e.getDate()).getMonthValue() == month)
                 .map(Expense::getAmount)
                 .reduce(Double::sum);
     }
