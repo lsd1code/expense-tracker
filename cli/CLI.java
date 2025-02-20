@@ -2,6 +2,8 @@ package org.lesedibale.projects.expense_tracker.cli;
 
 import org.lesedibale.projects.expense_tracker.expense_tracker.ExpenseTracker;
 
+import java.time.LocalDate;
+
 public class CLI {
     public final ExpenseTracker expenseTracker;
     private final String[] args;
@@ -31,7 +33,14 @@ public class CLI {
                     System.exit(0);
                 }
                 case "add" -> {
-                    System.out.println("add expense");
+                    if(addExpense()) {
+                        System.out.println("Expense added successfully");
+                    } else {
+                        System.out.println("""
+                        Error: Invalid arguments.
+                        Usage: java Application.java add --description [description] --amount [amount]
+                        """);
+                    }
                     System.exit(0);
                 }
                 case "summary" -> {
@@ -45,6 +54,34 @@ public class CLI {
                 default -> System.out.println("enter a valid argument");
             }
         }
+    }
+
+    public boolean addExpense() {
+        var descFlag = args[1];
+        var amountFlag = args[3];
+
+        if(!descFlag.equals("--description") || !amountFlag.equals("--amount") || args.length != 5) {
+            System.out.println("""
+            Error: Invalid arguments.
+            Usage: java Application.java add --description [description] --amount [amount]
+            """);
+            System.exit(1);
+        }
+
+        try {
+            var description = args[2];
+            var amount = Double.parseDouble(args[args.length - 1]);
+
+            expenseTracker.addExpense(description, LocalDate.now(), amount);
+        } catch (NumberFormatException ignored) {
+            System.out.println("""
+            Error: Invalid arguments.
+            Usage: java Application.java add --description [description] --amount [amount]
+            """);
+            System.exit(1);
+        }
+
+        return true;
     }
 
     public void summarize() {

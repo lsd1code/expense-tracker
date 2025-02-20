@@ -12,7 +12,7 @@ public class Expense {
 
     public Expense(String description, LocalDate date, double amount, long id) {
         this.description = description;
-        this.date = date;
+         this.date = date;
         this.amount = amount;
         this.id = id;
     }
